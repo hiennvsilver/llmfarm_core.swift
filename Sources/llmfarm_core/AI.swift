@@ -47,29 +47,33 @@ public class AI {
     
     public func initModel(_ inference: ModelInference,contextParams: ModelAndContextParams = .default) {
         self.model = nil
-        switch inference {        
-        case .LLama_gguf:
-            self.model = try? LLaMa(path: self.modelPath, contextParams: contextParams)
-        case .LLama_mm:
-            self.model = try? LLaMa_MModal(path: self.modelPath, contextParams: contextParams)
-        default:
-            self.model = try? LLaMa(path: self.modelPath, contextParams: contextParams)
-        // case .LLama_bin:
-        //     self.model = try? LLaMa_dadbed9(path: self.modelPath, contextParams: contextParams)
-        // case .GPTNeox:
-        //     self.model = try? GPTNeoX(path: self.modelPath, contextParams: contextParams)
-        // case .GPTNeox_gguf:
-        //     self.model = try? LLaMa(path: self.modelPath, contextParams: contextParams)
-        // case .GPT2:
-        //     self.model = try? GPT2(path: self.modelPath, contextParams: contextParams)
-        // case .Replit:
-        //     self.model = try? Replit(path: self.modelPath, contextParams: contextParams)
-        // case .Starcoder:
-        //     self.model = try? Starcoder(path: self.modelPath, contextParams: contextParams)
-        // case .Starcoder_gguf:
-        //     self.model = try? LLaMa(path: self.modelPath, contextParams: contextParams)
-        // case .RWKV:
-        //     self.model = try? RWKV(path: self.modelPath, contextParams: contextParams)
+        do {
+            switch inference {
+            case .LLama_gguf:
+                self.model = try LLaMa(path: self.modelPath, contextParams: contextParams)
+            case .LLama_mm:
+                self.model = try LLaMa_MModal(path: self.modelPath, contextParams: contextParams)
+            default:
+                self.model = try LLaMa(path: self.modelPath, contextParams: contextParams)
+                // case .LLama_bin:
+                //     self.model = try? LLaMa_dadbed9(path: self.modelPath, contextParams: contextParams)
+                // case .GPTNeox:
+                //     self.model = try? GPTNeoX(path: self.modelPath, contextParams: contextParams)
+                // case .GPTNeox_gguf:
+                //     self.model = try? LLaMa(path: self.modelPath, contextParams: contextParams)
+                // case .GPT2:
+                //     self.model = try? GPT2(path: self.modelPath, contextParams: contextParams)
+                // case .Replit:
+                //     self.model = try? Replit(path: self.modelPath, contextParams: contextParams)
+                // case .Starcoder:
+                //     self.model = try? Starcoder(path: self.modelPath, contextParams: contextParams)
+                // case .Starcoder_gguf:
+                //     self.model = try? LLaMa(path: self.modelPath, contextParams: contextParams)
+                // case .RWKV:
+                //     self.model = try? RWKV(path: self.modelPath, contextParams: contextParams)
+            }
+        } catch {
+            print("initModel error: \(error)")
         }
     
     }
@@ -196,7 +200,7 @@ func get_path_by_short_name(_ model_name:String?, dest:String = "lora_adapters")
     return nil
 }
 
-public func get_model_sample_param_by_config(_ model_config:Dictionary<String, AnyObject>) -> ModelSampleParams{
+public func get_model_sample_param_by_config(_ model_config:Dictionary<String, Any>) -> ModelSampleParams{
     var tmp_param = ModelSampleParams.default
     if (model_config["n_batch"] != nil){
         tmp_param.n_batch = model_config["n_batch"] as! Int32
@@ -266,7 +270,7 @@ public func get_system_prompt(_ prompt_format_in: String) -> (String,String){
 
 
 
-public func get_model_context_param_by_config(_ model_config:Dictionary<String, AnyObject>) -> ModelAndContextParams{
+public func get_model_context_param_by_config(_ model_config:Dictionary<String, Any>) -> ModelAndContextParams{
     var tmp_param = ModelAndContextParams.default
     if (model_config["context"] != nil){
         tmp_param.context = model_config["context"] as! Int32
